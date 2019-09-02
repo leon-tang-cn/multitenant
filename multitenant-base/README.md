@@ -49,7 +49,7 @@ create table sys_tenant_datasource
     db_username varchar(64),
     db_password varchar(64),
     remark      varchar(64),
-    status      varchar(1) default '0' // 0: disable; 1: enable;
+    status      varchar(1) default '0' -- 0: disable; 1: enable;
 );
 
 ```

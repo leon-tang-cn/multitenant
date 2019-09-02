@@ -8,7 +8,7 @@ Multiple Tenant
 
 ## Base
   
-Base on `Spring Data JPA V2.1.6`, extended to support multiple tenant.
+Base on `Spring Data JPA V2.1.6`, extended to support add/remove tenant entity manager(include datasource connection) in a running application.
 
 ## Usage
 

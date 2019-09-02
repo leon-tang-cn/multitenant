@@ -1,4 +1,4 @@
-A1 Solid Multiple Tenant
+Multiple Tenant
 ===
 ![][bg-jdk] ![][bg-springboot] ![][bg-spring-data-jpa]
 
@@ -12,7 +12,7 @@ A1 Solid Multiple Tenant
 
 ## 使用说明
 
-首先需要从 `a1-solid-multitenant` 包中获取创建表的sql文在数据库中执行表创建。
+首先需要从 `multitenant-base` 包中获取创建表的sql文在数据库中执行表创建。
 
 ```sql
 -- ----------------------------
@@ -47,21 +47,21 @@ create table sys_tenant_datasource
 ```
 
 - yml配置
-  - a1solid.multitenant.entityScanPackages (扫描的Entity包路径)
-  - a1solid.multitenant.dataSources.tenantId (租户ID)
+  - multitenant.entityScanPackages (扫描的Entity包路径)
+  - multitenant.dataSources.tenantId (租户ID)
     *注意：tenantId必须确保唯一*
-  - a1solid.multitenant.dataSources.defaultTenant (是否默认数据源)
+  - multitenant.dataSources.defaultTenant (是否默认数据源)
     默认值：false
     *注意：必须设置一个默认数据源*
-  - a1solid.multitenant.dataSources.url (数据源连接地址)
-  - a1solid.multitenant.dataSources.driverClassName (数据源驱动)
-  - a1solid.multitenant.dataSources.username (用户名)
-  - a1solid.multitenant.dataSources.password (密码)
-  - a1solid.multitenant.dataSources.xa.dataSourceClassName (分布式数据源类)
+  - multitenant.dataSources.url (数据源连接地址)
+  - multitenant.dataSources.driverClassName (数据源驱动)
+  - multitenant.dataSources.username (用户名)
+  - multitenant.dataSources.password (密码)
+  - multitenant.dataSources.xa.dataSourceClassName (分布式数据源类)
   
 - 示例
   ```yaml
-  a1solid.multitenant:
+  multitenant:
       entityScanPackages: 
       -
         "com.blank.domain.entity"
@@ -80,10 +80,4 @@ create table sys_tenant_datasource
   使用 `@EnableMultiTenantDataSource` 替换 `@EnableJpaRepositories`. `@EnableJpaRepositories`中的`basePackages`（需要扫描的包）属性相当于`@EnableJpaRepositories`的`basePackages`。
    
 - 使用TenantUserDetails接口
-
-### 页面
-
-框架默认提供一套完整的基于VIY的数据源查询编辑页面，服务启动后，可通过访问`/multitenant/datasources`进行查看编辑。
-
-获取页面html组件作为开发项目的页面组件使用。
 

@@ -49,10 +49,10 @@ create table sys_tenant_datasource
 - Application congiration (use application.yml or application.properties)
   - multitenant.entityScanPackages (entity scan path)
   - multitenant.dataSources.tenantId (tenant id)
-    *Notice: tenantId should be unique*
+    <br>*Notice: tenantId should be unique*
   - multitenant.dataSources.defaultTenant (is it a default datasource)
-    default: false
-    *Notice: At least 1 datasource should be configured*
+    <br>**default: false**
+    <br>*Notice: At least 1 datasource should be configured*
   - multitenant.dataSources.url (database connection url)
   - multitenant.dataSources.driverClassName (databse driver)
   - multitenant.dataSources.username (user name)

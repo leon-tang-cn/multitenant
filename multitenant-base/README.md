@@ -1,4 +1,4 @@
-A1 Solid Multiple Tenant
+Multiple Tenant
 ===
 ![][bg-jdk] ![][bg-springboot] ![][bg-spring-data-jpa]
 
@@ -6,13 +6,13 @@ A1 Solid Multiple Tenant
 [bg-springboot]: https://img.shields.io/badge/SpringBoot-2.1.4-information.svg?labelColor=blue
 [bg-spring-data-jpa]: https://img.shields.io/badge/SpringDataJpa-2.1.6-information.svg?labelColor=blue
 
-## 介绍
+## Base
   
-以 `Spring Data JPA V2.1.6` 为基础，扩展支持多租户功能.
+Base on `Spring Data JPA V2.1.6`, extended to support multiple tenant.
 
-## 使用说明
+## Usage
 
-首先需要从 `a1-solid-multitenant` 包中获取创建表的sql文在数据库中执行表创建。
+First, create tables from `src\main\resouces\db\tenant_ddl.sql` which located in `multitenant-base`.
 
 ```sql
 -- ----------------------------
@@ -46,22 +46,22 @@ create table sys_tenant_datasource
 
 ```
 
-- yml配置
-  - a1solid.multitenant.entityScanPackages (扫描的Entity包路径)
-  - a1solid.multitenant.dataSources.tenantId (租户ID)
-    *注意：tenantId必须确保唯一*
-  - a1solid.multitenant.dataSources.defaultTenant (是否默认数据源)
-    默认值：false
-    *注意：必须设置一个默认数据源*
-  - a1solid.multitenant.dataSources.url (数据源连接地址)
-  - a1solid.multitenant.dataSources.driverClassName (数据源驱动)
-  - a1solid.multitenant.dataSources.username (用户名)
-  - a1solid.multitenant.dataSources.password (密码)
-  - a1solid.multitenant.dataSources.xa.dataSourceClassName (分布式数据源类)
+- Application congiration (use application.yml or application.properties)
+  - multitenant.entityScanPackages (entity scan path)
+  - multitenant.dataSources.tenantId (tenant id)
+    *Notice: tenantId should be unique*
+  - multitenant.dataSources.defaultTenant (is it a default datasource)
+    default: false
+    *Notice: At least 1 datasource should be configured*
+  - multitenant.dataSources.url (database connection url)
+  - multitenant.dataSources.driverClassName (databse driver)
+  - multitenant.dataSources.username (user name)
+  - multitenant.dataSources.password (password)
+  - multitenant.dataSources.xa.dataSourceClassName (XA datasource class name)
   
-- 示例
+- Configuration sample
   ```yaml
-  a1solid.multitenant:
+  multitenant:
       entityScanPackages: 
       -
         "com.blank.domain.entity"
@@ -77,13 +77,7 @@ create table sys_tenant_datasource
             dataSourceClassName: org.postgresql.xa.PGXADataSource
   ```
 
-  使用 `@EnableMultiTenantDataSource` 替换 `@EnableJpaRepositories`. `@EnableJpaRepositories`中的`basePackages`（需要扫描的包）属性相当于`@EnableJpaRepositories`的`basePackages`。
+  In case of using multitenant component, use `@EnableMultiTenantDataSource` replace the `@EnableJpaRepositories`. `basePackages` attribute in `@EnableMultiTenantDataSource` equivalent to `basePackages` attribute in `@EnableJpaRepositories`.
    
-- 使用TenantUserDetails接口
-
-### 页面
-
-框架默认提供一套完整的基于VIY的数据源查询编辑页面，服务启动后，可通过访问`/multitenant/datasources`进行查看编辑。
-
-获取页面html组件作为开发项目的页面组件使用。
+- Using `TenantUserDetails` interface in Spring Security Enviroment.
 

@@ -54,7 +54,7 @@ create table sys_tenant_datasource
 
 ```
 
-- Application congiration (use application.yml or application.properties)
+- Application configuration (use application.yml or application.properties)
   - multitenant.entityScanPackages (entity scan path)
   - multitenant.dataSources.tenantId (tenant id)
     <br>*Notice: tenantId should be unique*

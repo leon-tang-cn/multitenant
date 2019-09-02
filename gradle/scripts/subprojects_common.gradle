@@ -1,0 +1,191 @@
+ext {
+  //Variables 
+  sourceEncoding = 'UTF-8'           // Encoding
+  jdkVersion = '1.8'                 // JDK Version
+  jstwebVersion = '3.0'  
+
+  //Import plugins
+  apply plugin: 'java'
+  apply plugin: 'groovy'
+  apply plugin: 'maven'
+  apply plugin: 'propdeps'
+  apply plugin: 'propdeps-eclipse'
+  apply plugin: 'project-report' 
+  apply plugin: 'org.sonarqube' 
+  apply plugin: 'findbugs'
+  //apply plugin: "io.freefair.lombok"
+
+  // Spring IO dependency-management-plugin
+  apply plugin: 'io.spring.dependency-management'
+  dependencyManagement {
+    imports {
+      mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+      // mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    }
+  } 
+
+  // project common libraries
+  dependencies {   
+    provided "javax.inject:javax.inject:${versions.inject}"   
+
+    compileOnly "org.projectlombok:lombok"
+
+    testCompile "org.codehaus.groovy:groovy"
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.spockframework:spock-spring:${versions.spock}"
+    testCompile "org.spockframework:spock-core:${versions.spock}"
+    testCompile "cglib:cglib-nodep:${versions.cglib}" 
+    // >=4.6 -> 'annotationProcessor'; <4.6 -> 'compileOnly' 
+    //Ref to 'https://docs.spring.io/spring-boot/docs/current/reference/html/configuration-metadata.html#configuration-metadata-annotation-processor'
+    if(isGradleVersionEqualOrGreater("4.6")) { 
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+        annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor" 
+        annotationProcessor "org.projectlombok:lombok"
+        
+    }else {
+        compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+        compileOnly "org.springframework.boot:spring-boot-autoconfigure-processor"  
+    }   
+  }
+  
+  repositories {
+    // maven { url nexusUrl  }
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+    maven { url 'https://plugins.gradle.org/m2/'  }	
+    maven { url 'http://repo.spring.io/milestone' }
+    maven { url 'http://repo.spring.io/plugins-release/'  }
+  }
+
+  // source compatibility during compile
+  [compileJava, compileTestJava].each {
+    it.sourceCompatibility = jdkVersion
+    it.targetCompatibility = jdkVersion
+  }
+  eclipse.jdt {
+    sourceCompatibility = jdkVersion
+    targetCompatibility = jdkVersion
+  }
+  // Compile Encoding
+  tasks.withType(AbstractCompile) each {
+    it.options.encoding = sourceEncoding
+  }
+  tasks.withType(GroovyCompile) each {
+   it.groovyOptions.encoding = sourceEncoding
+  }
+
+  findbugs {
+    excludeFilter = file("$rootProject.projectDir/config/findbugs/findbugs-filter.xml")
+    ignoreFailures = true
+  }
+  findbugsTest {
+    ignoreFailures = true
+  }
+  // Compile options
+  compileGroovy {
+    groovyOptions.forkOptions.jvmArgs = [ '-noverify' ]
+  }
+  test {
+    jvmArgs '-noverify'
+  }
+
+  javadoc {
+    options {
+      memberLevel = JavadocMemberLevel.PROTECTED
+      stylesheetFile = file("$rootProject.projectDir/gradle/javadoc-resources/stylesheet.css")
+      encoding = sourceEncoding
+      charSet = sourceEncoding
+      encoding = sourceEncoding
+      docEncoding = sourceEncoding
+      linkSource = true
+      splitIndex = true
+      windowTitle = "A1 Solid Framework Documentation"
+      docTitle = "A1 Solid Framework: $project.name ($project.version)"
+      bottom = "Copyright &copy; 2019 Yamaha Motor Solutions Xiamen Co., Ltd."
+      linksOffline = [
+        new JavadocOfflineLink('http://docs.oracle.com/javase/jp/8/docs/api/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/javase/"),
+        new JavadocOfflineLink('http://docs.oracle.com/javaee/7/api/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/javaee/"),
+        new JavadocOfflineLink('http://docs.spring.io/spring/docs/current/javadoc-api/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/spring/"),
+        new JavadocOfflineLink('http://docs.spring.io/autorepo/docs/spring-boot/current/api/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/spring-boot/"),
+        new JavadocOfflineLink('http://docs.spring.io/spring-batch/apidocs/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/spring-batch/"),
+        new JavadocOfflineLink('http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/apidocs/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/spring-security/"),
+        new JavadocOfflineLink('http://docs.spring.io/spring-data/commons/docs/1.9.1.RELEASE/api/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/spring-data-core/"),
+        new JavadocOfflineLink('http://docs.spring.io/spring-data/jpa/docs/1.7.2.RELEASE/api/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/spring-data-jpa/"),
+        new JavadocOfflineLink('http://docs.jboss.org/hibernate/orm/4.3/javadocs/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/hibernate/"),
+        new JavadocOfflineLink('http://www.slf4j.org/api/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/slf4j/"),
+        new JavadocOfflineLink('http://jadira.sourceforge.net/apidocs/',
+                               "$rootProject.projectDir/gradle/javadoc-resources/jadira/")
+      ]
+    }
+  }
+  eclipseClasspath {
+    dependsOn(cleanEclipse)
+  } 
+ 
+
+  //Add 'test-bin' as classpath
+  eclipse.classpath.file {
+    withXml { xml ->
+      xml.asNode().findAll { it.@path.startsWith('src/test/') }.each { it.@output = 'test-bin' }
+    }
+  }
+ 
+   
+  task sourcesJar(type: Jar, dependsOn:classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+  }
+  artifacts {
+    archives sourcesJar
+  }    
+ 
+  jar {
+    manifest {
+        attributes(
+            //"Built-By": System.properties["user.name"],
+            "Build-DateTime": buildDateTime,
+            "Build-Revision": jarBuildVersion,
+            "Specification-Title": project.name,
+            "Specification-Version": project.version,
+            "Specification-Vendor": project.name,
+            "Implementation-Title": project.name,
+            "Implementation-Version": project.version,
+            "Implementation-Vendor": project.name
+        )
+    }
+  }
+
+  //Generate an 'additional-spring-configuration-metadata.json' file
+  compileJava.dependsOn(processResources) 
+
+  //upload to nexus
+  // def NEXUS_UPLOAD_REPOS_URL= System.getProperty("NEXUS_UPLOAD_REPOS_URL", ""),
+  //     NEXUS_UPLOAD_REPOS_USER= System.getProperty("NEXUS_UPLOAD_REPOS_USER", ""),
+  //     NEXUS_UPLOAD_REPOS_PWD= System.getProperty("NEXUS_UPLOAD_REPOS_PWD", ""); 
+  def NEXUS_UPLOAD_REPOS_URL= project.properties['url'],
+      NEXUS_UPLOAD_REPOS_USER= project.properties['user'],
+      NEXUS_UPLOAD_REPOS_PWD= project.properties['password']; 
+  uploadArchives {
+    repositories {
+      mavenDeployer {
+        repository(url: NEXUS_UPLOAD_REPOS_URL) {
+          authentication(userName: NEXUS_UPLOAD_REPOS_USER, password: NEXUS_UPLOAD_REPOS_PWD)
+        }
+        pom.version    = project.version
+        pom.artifactId = project.name
+        pom.groupId    = project.group
+      }
+    }
+  }
+}

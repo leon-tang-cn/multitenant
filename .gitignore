@@ -1,0 +1,23 @@
+.DS_Store
+*.class
+ 
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+ 
+# Package Files #
+*.jar
+*.war
+*.ear
+.gradle/
+target/
+bin/
+test-bin/
+build/
+ 
+# virtual machine crash logs
+hs_err_pid*
+ 
+#eclipse
+*.settings
+*.project
+*.classpath

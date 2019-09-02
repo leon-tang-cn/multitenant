@@ -1,0 +1,56 @@
+// '3.1'-> '3', '3.1.1'->'3.1', '3' -> '3'
+def getGradleBriefVersion() {
+  def m = java.util.regex.Pattern.compile("(\\d+(\\.\\d+)?)").matcher(gradle.gradleVersion)
+  if(m.find()) {
+    return m.group(1)
+  }
+  return null
+}
+
+def convertStringToIntArray(str) {
+  def ss = str.split("\\.")
+  def list = []
+  for (c in ss) {
+    list.add(Integer.valueOf(c))
+  }
+  return list
+}
+
+def isEqualOrGreaterVersion(actual, comparedVersion) {
+	
+	if(actual == null || actual.length()==0) {
+	  return false
+	}  
+	int[] actualVs  = convertStringToIntArray(actual)
+	int[] compareVs = convertStringToIntArray(comparedVersion)
+	
+	int al = actualVs.length,
+		cl = compareVs.length
+	if(al ==0) {
+		return false;
+	}
+	if(cl ==0) {
+		return true;
+	} 
+	if(actualVs[0] > compareVs[0] ) {
+		 return true;
+	}
+
+	if(actualVs[0] == compareVs[0] ) {
+		if(al == 1) {
+			return cl == 1;
+		}
+		if(cl == 1) {
+			return false;
+		}
+		return actualVs[1] >= compareVs[1];
+	}
+	return false;
+}
+
+def isGradleVersionEqualOrGreater(comparedVersion) {
+  isEqualOrGreaterVersion(getGradleBriefVersion(), comparedVersion) 
+} 
+ext {
+    isGradleVersionEqualOrGreater = this.&isGradleVersionEqualOrGreater
+}

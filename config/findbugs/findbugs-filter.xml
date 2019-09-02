@@ -1,0 +1,23 @@
+<!DOCTYPE FindBugsFilter>
+<FindBugsFilter>
+  <Match>
+    <Class name="~jp\.co\.toshibatec\.smart_receipt\.entity\..*"/>
+    <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2, SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+  </Match>
+  <Match>
+    <Class name="~jp\.co\.toshibatec\.smart_receipt\.site\..*"/>
+    <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="~jp\.co\.toshibatec\.smart_receipt\.storage\..*"/>
+    <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="~jp\.co\.toshibatec\.smart_receipt\.receiver\..*"/>
+    <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="~jp\.co\.toshibatec\.smart_receipt\.batch\..*"/>
+    <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2, SE_NO_SERIALVERSIONID"/>
+  </Match>
+</FindBugsFilter>

@@ -1,0 +1,45 @@
+apply from: "$rootProject.projectDir/gradle/scripts/base.gradle"
+
+buildscript {
+  def propdepsVersion        = "0.0.7"
+  def versioningVersion      = "2.8.2"
+   def sonarqubeVersion       = "2.7.1"
+  //def lomokPluginVersion   = "3.7.5"
+  //The version of spring Boot 
+  ext {
+     springBootVersion  = "2.1.4.RELEASE" 
+     nexusServer        = "http://localhost:8081"
+     nexusUrl           =  nexusServer + "/repository/xxx/"
+  }
+  repositories {
+    // maven { url nexusUrl} 
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+    maven { url 'https://plugins.gradle.org/m2/'  }	  
+    maven { url 'http://repo.spring.io/milestone' }
+    maven { url 'http://repo.spring.io/plugins-release/'  }
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+    classpath "org.springframework.build.gradle:propdeps-plugin:$propdepsVersion" 
+    //classpath "io.freefair.gradle:lombok-plugin:${lomokPluginVersion}"
+    classpath "gradle.plugin.net.nemerosa:versioning:$versioningVersion"
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:$sonarqubeVersion"
+  }
+}
+
+subprojects {
+  
+  //The same "GV" for all subprojects
+  group   = pjGroupName
+  version = pjVersion
+
+  //Common parts of all subprojects
+  apply from: "$rootProject.projectDir/gradle/scripts/subprojects_common.gradle" 
+}
+
+wrapper {
+  gradleVersion = "5.4.1"
+  distributionUrl = nexusServer+"/repository/Gradle_Distributions/gradle_wrapper/gradle_wrapper/"+gradleVersion+"/gradle-" + gradleVersion + "-bin.zip"
+}

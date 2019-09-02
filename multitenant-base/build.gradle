@@ -1,0 +1,9 @@
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-data-jpa") {
+        exclude group: "javax.transaction", module: "javax.transaction-api"
+    }
+    compile "com.google.code.findbugs:jsr305:${versions.jsr305}"
+    provided("org.codehaus.btm:btm") {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
+}

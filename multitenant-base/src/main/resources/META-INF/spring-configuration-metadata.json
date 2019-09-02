@@ -1,0 +1,21 @@
+{"groups": [],
+  "properties": [
+    {
+      "name": "multitenant.entityScanPackages",
+      "type": "java.util.List",
+      "description": "Package names for entity scan."
+    },
+    {
+      "name": "multitenant.dataSources",
+      "type": "java.util.List",
+      "description": "Datasource definitions for multitenant configuration.",
+      "sourceType": "com.leon.solid.multitenant.config.MultiTenantProperties.DataSourceProperties"
+    },
+    {
+      "name": "spring.jpa.properties.hibernate.dialect",
+      "type": "java.lang.String",
+      "description": "Hibernate dialet class setting for multitenant configuration.",
+    }
+  ],
+  "hints": []
+}

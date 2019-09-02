@@ -16,14 +16,23 @@ First, create tables from `src\main\resouces\db\tenant_ddl.sql` which located in
 
 ```sql
 -- ----------------------------
+-- Table structure for sys_tenant_rule
+-- ----------------------------
+CREATE TABLE sys_tenant_rule
+( 
+    id            varchar(64) NOT NULL constraint sys_tenant_rule_pk  primary key,
+    site_id       varchar(64) NOT NULL DEFAULT ' ',
+    package_name  varchar(255)
+);
+
+-- ----------------------------
 -- Table structure for sys_tenant_relation
 -- ----------------------------
 CREATE TABLE sys_tenant_relation
 ( 
-    id SERIAL NOT NULL constraint sys_tenant_relation_pk  primary key,
-    relation_id  varchar(64) NOT NULL DEFAULT ' '::character varying,
-    tenant_id    varchar(64) NOT NULL DEFAULT ' '::character varying,
-    package_name varchar(255)
+    id        varchar(64) NOT NULL constraint sys_tenant_relation_pk  primary key,
+    rule_id   varchar(64) NOT NULL DEFAULT ' ',
+    tenant_id varchar(64) NOT NULL DEFAULT ' '
 );
 
 -- ----------------------------
@@ -31,8 +40,7 @@ CREATE TABLE sys_tenant_relation
 -- ----------------------------
 create table sys_tenant_datasource
 (
-    tenant_id   varchar(64) not null
-        constraint sys_tenant_datasource_pk primary key,
+    tenant_id   varchar(64) not null constraint sys_tenant_datasource_pk primary key,
     db_type     varchar(20) not null,
     name        varchar(64),
     db_url      varchar(255),
@@ -41,7 +49,7 @@ create table sys_tenant_datasource
     db_username varchar(64),
     db_password varchar(64),
     remark      varchar(64),
-    status      varchar(1) default '1'
+    status      varchar(1) default '0' // 0: disable; 1: enable;
 );
 
 ```
@@ -78,6 +86,3 @@ create table sys_tenant_datasource
   ```
 
   In case of using multitenant component, use `@EnableMultiTenantDataSource` replace the `@EnableJpaRepositories`. `basePackages` attribute in `@EnableMultiTenantDataSource` equivalent to `basePackages` attribute in `@EnableJpaRepositories`.
-   
-- Using `TenantUserDetails` interface in Spring Security Enviroment.
-
